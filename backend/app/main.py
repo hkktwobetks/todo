@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.db import init_engine, dispose_engine
 from app.domains.tasks import router as task_router
@@ -30,6 +31,13 @@ app.add_exception_handler(NotFoundError, not_found_exception_handler)
 app.add_exception_handler(AppError, handle_app_error)
 app.add_exception_handler(RequestValidationError, handle_request_validation)
 app.add_exception_handler(Exception, handle_unexpected)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/healthz")
